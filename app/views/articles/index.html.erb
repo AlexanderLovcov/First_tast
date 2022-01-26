@@ -1,14 +1,25 @@
-<p style="color: green"><%= notice %></p>
-
 <h1>Articles</h1>
 
-<div id="articles">
-  <% @articles.each do |article| %>
-    <%= render article %>
-    <p>
-      <%= link_to "Show this article", article %>
-    </p>
-  <% end %>
-</div>
+<table>
+  <thead>
+  <tr>
+    <th>Title</th>
+    <th>Url</th>
+    <th colspan='3'>Actions</th>
+  </tr>
+  </thead>
 
-<%= link_to "Add article", new_article_path %>
+  <tbody>
+  <% @articles.each do |article| %>
+    <tr>
+      <td><%= article.title %></td>
+      <td><%= article.url_of_article %></td>
+      <td><%= link_to 'Show', article_path(article) %></td>
+      <td><%= button_to'Delete', article_path(article), method: :delete, data: {confirm: "Are you sure?"}%></td>
+      <td><%= link_to 'Analyze', analyze_path(article) %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<h2><%= link_to "Add article", new_article_path %></h2>

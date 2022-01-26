@@ -1,3 +1,6 @@
+require 'nokogiri'
+require 'open-uri'
+
 class ArticlesController < ApplicationController
   before_action :set_article, only: %i[ show edit update destroy ]
 
@@ -54,6 +57,18 @@ class ArticlesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
       format.json { head :no_content }
+    end
+  end
+
+  #Searching in article for comments & its authors
+  def scrub
+    url_of_article = @article.url_of_article
+    list_of_author_names = []
+
+    doc = Nokogiri::HTML(URI.open('%s' % [url_of_article] + 'comments.html#comments'))
+    doc.css('div.onecomm p.author span.about strong.name').each do |name|
+      list_of_author_names += name
+      @article.number_of_comments = list_of_author_names.length
     end
   end
 
