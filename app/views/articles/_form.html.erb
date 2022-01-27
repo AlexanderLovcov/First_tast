@@ -11,12 +11,14 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :url_of_article, style: "display: block" %>
-    <%= form.text_area :url_of_article %>
-  </div>
-
-  <div>
-    <%= form.submit 'Add article' %>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="input-group mb-3">
+        <%= form.text_field :url_of_article, class: 'form-control', placeholder: 'Enter url of article' %>
+        <div class="input-group-append">
+          <%= form.submit 'Add article', class: 'btn btn-success' %>
+        </div>
+      </div>
+    </div>
   </div>
 <% end %>

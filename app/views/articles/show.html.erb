@@ -7,6 +7,6 @@
 <div>
   <strong><%= link_to 'Analyze', analyze_article_path(@article) %></strong> |
   <strong><%= link_to "Add article", new_article_path %></strong>
-  <%= button_to 'Delete', article_path(@article), method: :delete, data: {confirm: "Are you sure?"} %>
+  <%= link_to "delete", article_path(@article), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } %>
   <h2><%= link_to "Back to articles", articles_path %></h2>
 </div>

@@ -1,6 +1,3 @@
-require 'nokogiri'
-require 'open-uri'
-
 class ArticlesController < ApplicationController
   before_action :set_article, only: %i[ show edit update destroy count_comments set_article_number_of_comments]
 
@@ -25,7 +22,7 @@ class ArticlesController < ApplicationController
   # POST /articles or /articles.json
   def create
     @article = Article.new(article_params)
-    @article.title = self.get_article_name
+    @article.title = CommentsCountAnalyzer.get_article_name(@article.url_of_article)
 
     respond_to do |format|
       if @article.save
@@ -61,37 +58,16 @@ class ArticlesController < ApplicationController
     end
   end
 
-  def get_article_name
-    doc = Nokogiri::HTML(URI.open('%s' % [@article.url_of_article]))
-    doc.css('h1').text
-  end
-
-  # GET /articles/1 or /articles/1.json
+    # GET /articles/1 or /articles/1.json
   def count_comments
-    list_of_author_names = []
-    art_url = @article.url_of_article
-
-    if art_url.include? '/comments.html#comments'
-      doc = Nokogiri::HTML(URI.open('%s' % [art_url]))
-    else
-      art_url = @article.url_of_article.gsub('.html', '') + '/comments.html#comments'
-      doc = Nokogiri::HTML(URI.open('%s' % [art_url]))
-    end
-
-    doc.css('div.onecomm p.author span.about strong.name').each do |name|
-      list_of_author_names.append(name.content)
-    end
+    comments_count = CommentsCountAnalyzer.perform(@article)
 
     respond_to do |format|
       format.html { redirect_to article_url(@article) }
       format.json { render :show, status: :ok, location: @article }
-      list_of_author_names.length
     end
-  end
 
-  # PATCH/PUT /articles/1 or /articles/1.json
-  def set_article_number_of_comments
-    @article.number_of_comments = self.count_comments
+    @article.update_attribute(:number_of_comments, comments_count)
   end
 
   private
