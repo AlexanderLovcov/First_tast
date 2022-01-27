@@ -2,7 +2,7 @@ require 'nokogiri'
 require 'open-uri'
 
 class ArticlesController < ApplicationController
-  before_action :set_article, only: %i[ show edit update destroy ]
+  before_action :set_article, only: %i[ show edit update destroy count_comments set_article_number_of_comments]
 
   # GET /articles or /articles.json
   def index
@@ -25,6 +25,7 @@ class ArticlesController < ApplicationController
   # POST /articles or /articles.json
   def create
     @article = Article.new(article_params)
+    @article.title = self.get_article_name
 
     respond_to do |format|
       if @article.save
@@ -60,26 +61,48 @@ class ArticlesController < ApplicationController
     end
   end
 
-  #Searching in article for comments & its authors
-  def scrub
-    url_of_article = @article.url_of_article
-    list_of_author_names = []
+  def get_article_name
+    doc = Nokogiri::HTML(URI.open('%s' % [@article.url_of_article]))
+    doc.css('h1').text
+  end
 
-    doc = Nokogiri::HTML(URI.open('%s' % [url_of_article] + 'comments.html#comments'))
+  # GET /articles/1 or /articles/1.json
+  def count_comments
+    list_of_author_names = []
+    art_url = @article.url_of_article
+
+    if art_url.include? '/comments.html#comments'
+      doc = Nokogiri::HTML(URI.open('%s' % [art_url]))
+    else
+      art_url = @article.url_of_article.gsub('.html', '') + '/comments.html#comments'
+      doc = Nokogiri::HTML(URI.open('%s' % [art_url]))
+    end
+
     doc.css('div.onecomm p.author span.about strong.name').each do |name|
-      list_of_author_names += name
-      @article.number_of_comments = list_of_author_names.length
+      list_of_author_names.append(name.content)
+    end
+
+    respond_to do |format|
+      format.html { redirect_to article_url(@article) }
+      format.json { render :show, status: :ok, location: @article }
+      list_of_author_names.length
     end
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_article
-      @article = Article.find(params[:id])
-    end
+  # PATCH/PUT /articles/1 or /articles/1.json
+  def set_article_number_of_comments
+    @article.number_of_comments = self.count_comments
+  end
 
-    # Only allow a list of trusted parameters through.
-    def article_params
-      params.require(:article).permit(:title, :url_of_article)
-    end
+  private
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_article
+    @article = Article.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def article_params
+    params.require(:article).permit(:title, :url_of_article, :number_of_comments)
+  end
 end

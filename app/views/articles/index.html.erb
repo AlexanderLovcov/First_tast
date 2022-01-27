@@ -6,6 +6,7 @@
     <th>Title</th>
     <th>Url</th>
     <th colspan='3'>Actions</th>
+    <th>Rating</th>
   </tr>
   </thead>
 
@@ -15,8 +16,9 @@
       <td><%= article.title %></td>
       <td><%= article.url_of_article %></td>
       <td><%= link_to 'Show', article_path(article) %></td>
-      <td><%= button_to'Delete', article_path(article), method: :delete, data: {confirm: "Are you sure?"}%></td>
-      <td><%= link_to 'Analyze', analyze_path(article) %></td>
+      <td><%= button_to 'Delete', article_path(article), method: :delete, data: { confirm: "Are you sure?" } %></td>
+      <td><%= link_to 'Analyze', analyze_article_path(article) %></td>
+      <td><%= "placeholder" %></td>
     </tr>
   <% end %>
   </tbody>

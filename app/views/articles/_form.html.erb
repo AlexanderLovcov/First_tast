@@ -12,16 +12,11 @@
   <% end %>
 
   <div>
-    <%= form.label :title, style: "display: block" %>
-    <%= form.text_field :title %>
-  </div>
-
-  <div>
     <%= form.label :url_of_article, style: "display: block" %>
     <%= form.text_area :url_of_article %>
   </div>
 
   <div>
-    <%= form.submit %>
+    <%= form.submit 'Add article' %>
   </div>
 <% end %>

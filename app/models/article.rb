@@ -1,5 +1,5 @@
 class Article < ApplicationRecord
-  validates :title, presence: true
+  has_many :comments
   validates :url_of_article, presence: true
 
 end
