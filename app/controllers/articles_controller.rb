@@ -22,7 +22,7 @@ class ArticlesController < ApplicationController
   # POST /articles or /articles.json
   def create
     @article = Article.new(article_params)
-    @article.title = CommentsCountAnalyzer.get_article_name(@article.url_of_article)
+    @article.title = ArticleAnalyzer.article_name(@article.url_of_article)
 
     respond_to do |format|
       if @article.save
@@ -58,16 +58,20 @@ class ArticlesController < ApplicationController
     end
   end
 
-    # GET /articles/1 or /articles/1.json
+  # GET /articles/1 or /articles/1.json
   def count_comments
-    comments_count = CommentsCountAnalyzer.perform(@article)
+    comments_count = ArticleAnalyzer.count_comments(@article)
 
     respond_to do |format|
-      format.html { redirect_to article_url(@article) }
-      format.json { render :show, status: :ok, location: @article }
+      if @article.update(number_of_comments: comments_count)
+        format.html { redirect_to article_url(@article) }
+        format.json { render :show, status: :ok, location: @article }
+      else
+        format.html { render :show, status: :unprocessable_entity }
+        format.json { render json: @article.errors, status: :unprocessable_entity }
+      end
     end
 
-    @article.update_attribute(:number_of_comments, comments_count)
   end
 
   private
