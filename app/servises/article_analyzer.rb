@@ -16,4 +16,21 @@ class ArticleAnalyzer
     doc = Nokogiri::HTML(URI.open('%s' % [url_of_article]))
     doc.css('h1').text
   end
+
+  def self.get_comments(article)
+    art_url = article.url_of_article
+    art_url = article.url_of_article.gsub('.html', '') + '/comments.html#comments' unless art_url.include? '/comments.html#comments'
+
+    doc = Nokogiri::HTML(URI.open('%s' % [art_url]))
+
+    doc.css('div.onecomm p.commtext').each do |commtext|
+      Comment.create!(comment_text: commtext)
+    end
+  end
+
+  private
+
+  def check_for_correct_url
+
+  end
 end
