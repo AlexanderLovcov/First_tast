@@ -8,6 +8,7 @@
   <strong><%= link_to 'Analyze', analyze_article_path(@article) %></strong> |
   <strong><%= link_to "Add article", new_article_path %></strong> |
   <%= link_to "Delete", article_path(@article), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } %> |
-  <%= link_to "Get comments", get_comments_article_path(@article) %>
+  <%= link_to "Get comments", get_comments_article_path(@article) %> |
+  <%= link_to "Show comments", article_comments_path(@article) %>
   <h2><%= link_to "Back to articles", articles_path %></h2>
 </div>
