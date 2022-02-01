@@ -1,0 +1,18 @@
+<div class="table_of_comments">
+  <table><strong>Table of comments</strong>
+    <thead>
+    <tr>
+      <td>Author</td>
+      <td>Comment</td>
+    </tr>
+    </thead>
+    <tbody>
+    <%= @comments.each do |comment| %>
+      <tr>
+        <td><%= 'Author' %></td>
+        <td><%= comment.comment_text%></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>
