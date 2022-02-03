@@ -1,5 +1,8 @@
 class Article < ApplicationRecord
-  has_many :comments
+  has_many :comments, dependent: :destroy
 
-  validates :url_of_article, presence: true
+  validates :url, presence: true
+  def fetched?
+
+  end
 end

@@ -2,8 +2,8 @@
 
 one:
   title: MyString
-  url_of_article: MyText
+  url: MyText
 
 two:
   title: MyString
-  url_of_article: MyText
+  url: MyText

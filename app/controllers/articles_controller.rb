@@ -22,7 +22,7 @@ class ArticlesController < ApplicationController
   # POST /articles or /articles.json
   def create
     @article = Article.new(article_params)
-    @article.title = ArticleAnalyzer.article_name(@article.url_of_article)
+    @article.title = ArticleAnalyzer.article_name(@article.url)
 
     respond_to do |format|
       if @article.save
@@ -51,8 +51,6 @@ class ArticlesController < ApplicationController
   # DELETE /articles/1 or /articles/1.json
   def destroy
     @article.destroy
-    @comments = Comment.find(params[:article_id])
-    @comments.destroy
 
     respond_to do |format|
       format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
@@ -85,6 +83,6 @@ class ArticlesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def article_params
-    params.require(:article).permit(:title, :url_of_article, :number_of_comments)
+    params.require(:article).permit(:title, :url, :number_of_comments, :is_fetched)
   end
 end
