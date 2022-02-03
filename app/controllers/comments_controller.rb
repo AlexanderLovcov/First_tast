@@ -1,22 +1,17 @@
-class CommentsController < ArticlesController
+class CommentsController < ApplicationController
   before_action :set_article
 
   def index
-    @comments = Comment.all
+    @comments = Article.find(params[:article_id]).comments
   end
 
   def create
     ArticleAnalyzer.get_comments(@article)
+    redirect_to article_url(@article), notice: "Comments were successfully fetched."
+  end
 
-    respond_to do |format|
-      if @article.save
-        format.html { redirect_to article_url(@article) }
-        format.json { render :show, status: :ok, location: @article }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @article.errors, status: :unprocessable_entity }
-      end
-    end
+  def destroy
+    @comments.destroy
   end
 
   private
@@ -25,4 +20,10 @@ class CommentsController < ArticlesController
   def comment_params
     params.require(:comment).permit(:comment_text)
   end
+
+  def set_article
+    @article = Article.find(params[:article_id])
+  end
+
+
 end

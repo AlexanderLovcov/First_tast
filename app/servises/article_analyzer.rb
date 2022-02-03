@@ -23,8 +23,8 @@ class ArticleAnalyzer
 
     doc = Nokogiri::HTML(URI.open('%s' % [art_url]))
 
-    doc.css('div.onecomm p.commtext').each do |commtext|
-      Comment.create!(comment_text: commtext.content, article_id: article.id)
+    doc.css('div.onecomm p.commtext').map do |commtext|
+      Comment.create(comment_text: commtext.content, article_id: article.id)
     end
   end
 

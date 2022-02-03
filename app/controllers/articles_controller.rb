@@ -51,6 +51,8 @@ class ArticlesController < ApplicationController
   # DELETE /articles/1 or /articles/1.json
   def destroy
     @article.destroy
+    @comments = Comment.find(params[:article_id])
+    @comments.destroy
 
     respond_to do |format|
       format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }

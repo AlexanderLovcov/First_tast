@@ -3,16 +3,21 @@
     <thead>
     <tr>
       <td>Author</td>
-      <td>Comment</td>
+      <td><center>Comment</center></td>
+      <td>Rating</td>
     </tr>
     </thead>
     <tbody>
-    <%= @comments.each do |comment| %>
+    <% @comments.each do |comment| %>
       <tr>
         <td><%= 'Author' %></td>
         <td><%= comment.comment_text%></td>
+        <td><%= 'raitng' %></td>
       </tr>
     <% end %>
     </tbody>
   </table>
+</div>
+<div>
+  <h2><%= link_to "Back to articles", articles_path %></h2>
 </div>
