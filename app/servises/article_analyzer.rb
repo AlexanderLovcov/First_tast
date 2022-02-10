@@ -1,5 +1,8 @@
 require 'nokogiri'
 require 'open-uri'
+require 'net/https'
+require 'uri'
+require 'json'
 
 class ArticleAnalyzer
   def self.count_comments(article)
@@ -25,6 +28,31 @@ class ArticleAnalyzer
 
     doc.css('div.onecomm p.commtext').map do |commtext|
       Comment.create(comment_text: commtext.content, article_id: article.id)
+    end
+  end
+
+  def self.analyze_comments(article)
+    comments = article.comments
+    subscription_key = "5a4ef95416fb4d849355e132d0924cde"
+    endpoint = "https://article-analazer-anendo8.cognitiveservices.azure.com/"
+
+    path = '/text/analytics/v3.0/sentiment'
+
+    uri = URI(endpoint + path)
+
+    documents = { 'documents': [
+      { 'id' => '1', 'language' => 'ru', 'text' => comments.comment_text }
+    ]}
+
+    puts 'Please wait a moment for the results to appear.'
+
+    request = Net::HTTP::Post.new(uri)
+    request['Content-Type'] = "application/json"
+    request['Ocp-Apim-Subscription-Key'] = subscription_key
+    request.body = documents.to_json
+
+    response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
+      http.request (request)
     end
   end
 end
