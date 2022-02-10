@@ -3,7 +3,9 @@
     <thead>
     <tr>
       <td>Author</td>
-      <td><center>Comment</center></td>
+      <td>
+        <center>Comment</center>
+      </td>
       <td>Rating</td>
     </tr>
     </thead>
@@ -11,8 +13,8 @@
     <% @comments.each do |comment| %>
       <tr>
         <td><%= 'Author' %></td>
-        <td><%= comment.comment_text%></td>
-        <td><%= 'raitng' %></td>
+        <td><%= comment.comment_text %></td>
+        <td><%= 'Rating' %></td>
       </tr>
     <% end %>
     </tbody>

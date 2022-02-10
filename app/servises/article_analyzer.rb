@@ -26,21 +26,5 @@ class ArticleAnalyzer
     doc.css('div.onecomm p.commtext').map do |commtext|
       Comment.create(comment_text: commtext.content, article_id: article.id)
     end
-
   end
-
-  def self.count_comment_rating
-
-  end
-
-  def self.count_article_rating
-
-  end
-
-  private
-
-  def check_for_correct_url
-
-  end
-
 end
