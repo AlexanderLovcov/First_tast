@@ -5,8 +5,9 @@
   <tr>
     <th>Title</th>
     <th>Url</th>
-    <th colspan='2'>Actions</th>
-    <th>Rating</th>
+    <th class="text-center" colspan='2'>Actions</th>
+    <th class="text-center">Rating</th>
+    <th class="text-center">Number of comments</th>
   </tr>
   </thead>
 
@@ -14,7 +15,7 @@
   <% @articles.each do |article| %>
     <tr>
       <td><%= link_to article.title, article_path(article) %></td>
-      <td><a href="<%= article.url_of_article %>" target="_blank"><%= article.url_of_article %></a></td>
+      <td><a href="<%= article.url %>" target="_blank"><%= article.url %></a></td>
       <td>
         <%= link_to article_path(article), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
           <i class="fa fa-trash" style="color: rgba(196,0,0,1); font-size: 18px;"></i>
@@ -22,6 +23,7 @@
       </td>
       <td><%= link_to 'Analyze', analyze_article_path(article), class: 'btn btn-success' %></td>
       <td><%= "placeholder" %></td>
+      <td class="text-center"><%= article.number_of_comments %></td>
     </tr>
   <% end %>
   </tbody>

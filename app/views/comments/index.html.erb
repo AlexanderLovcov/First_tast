@@ -1,0 +1,25 @@
+<div class="table_of_comments">
+  <table><strong>Table of comments</strong>
+    <thead>
+    <tr>
+      <td>Author</td>
+      <td>
+        <center>Comment</center>
+      </td>
+      <td>Rating</td>
+    </tr>
+    </thead>
+    <tbody>
+    <% @comments.each do |comment| %>
+      <tr>
+        <td><%= 'Author' %></td>
+        <td><%= comment.comment_text %></td>
+        <td><%= 'Rating' %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>
+<div>
+  <h2><%= link_to "Back to article", article_path(@article) %></h2>
+</div>

@@ -15,7 +15,7 @@ class ArticlesTest < ApplicationSystemTestCase
     click_on "New article"
 
     fill_in "Title", with: @article.title
-    fill_in "Url of article", with: @article.url_of_article
+    fill_in "Url of article", with: @article.url
     click_on "Create Article"
 
     assert_text "Article was successfully created"
@@ -27,7 +27,7 @@ class ArticlesTest < ApplicationSystemTestCase
     click_on "Edit this article", match: :first
 
     fill_in "Title", with: @article.title
-    fill_in "Url of article", with: @article.url_of_article
+    fill_in "Url of article", with: @article.url
     click_on "Update Article"
 
     assert_text "Article was successfully updated"

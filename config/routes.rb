@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     member do
       get 'analyze', to: 'articles#count_comments'
     end
+    resources :comments, only: [:index, :create, :destroy]
   end
 
 end
