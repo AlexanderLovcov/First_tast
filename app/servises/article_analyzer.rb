@@ -32,7 +32,9 @@ class ArticleAnalyzer
   end
 
   def self.analyze_comments(article)
-    comments = article.comments
+    comments = article.comments.map do |comment|
+      { language: 'en', text: comment.comment_text }
+    end
     subscription_key = "5a4ef95416fb4d849355e132d0924cde"
     endpoint = "https://article-analazer-anendo8.cognitiveservices.azure.com/"
 
@@ -40,11 +42,7 @@ class ArticleAnalyzer
 
     uri = URI(endpoint + path)
 
-    documents = { 'documents': [
-      { 'id' => '1', 'language' => 'ru', 'text' => comments.comment_text }
-    ]}
-
-    puts 'Please wait a moment for the results to appear.'
+    documents = { 'documents': comments }
 
     request = Net::HTTP::Post.new(uri)
     request['Content-Type'] = "application/json"
@@ -54,5 +52,8 @@ class ArticleAnalyzer
     response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
       http.request (request)
     end
+    response = JSON::pretty_generate (JSON (response.body))
+    response = JSON.parse(response)
+    response['documents'].map{ |comment| comment['confidenceScores'].each_with_object({}){ |(key, value), hash| hash.merge!(key => value * 100) } }
   end
 end
