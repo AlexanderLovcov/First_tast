@@ -5,6 +5,10 @@ require 'uri'
 require 'json'
 
 class ArticleAnalyzer
+
+  ENDPOINT = "https://article-analazer-anendo8.cognitiveservices.azure.com/"
+  PATH = '/text/analytics/v3.0/sentiment'
+
   def self.count_comments(article)
     art_url = article.url
     art_url = article.url.gsub('.html', '') + '/comments.html#comments' unless art_url.include? '/comments.html#comments'
@@ -35,25 +39,25 @@ class ArticleAnalyzer
     comments = article.comments.map do |comment|
       { language: 'en', text: comment.comment_text }
     end
-    subscription_key = "5a4ef95416fb4d849355e132d0924cde"
-    endpoint = "https://article-analazer-anendo8.cognitiveservices.azure.com/"
 
-    path = '/text/analytics/v3.0/sentiment'
-
-    uri = URI(endpoint + path)
-
+    uri = URI(ENDPOINT + PATH)
     documents = { 'documents': comments }
 
+
+    response = JSON.parse(ArticleAnalyzer.handle_request(uri, ArticleAnalyzer.build_request(documents, uri)))
+    response['documents'].map{ |comment| comment['confidenceScores'].each_with_object({}){ |(k, v), h| h.merge!(k => v * 100) } }
+  end
+
+  def self.build_request(documents, uri)
     request = Net::HTTP::Post.new(uri)
     request['Content-Type'] = "application/json"
-    request['Ocp-Apim-Subscription-Key'] = subscription_key
+    request['Ocp-Apim-Subscription-Key'] = ENV["SUBSCRIPTION_KEY"]
     request.body = documents.to_json
+  end
 
-    response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
+  def self.handle_request(uri, request)
+    request = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
       http.request (request)
     end
-    response = JSON::pretty_generate (JSON (response.body))
-    response = JSON.parse(response)
-    response['documents'].map{ |comment| comment['confidenceScores'].each_with_object({}){ |(key, value), hash| hash.merge!(key => value * 100) } }
   end
 end
