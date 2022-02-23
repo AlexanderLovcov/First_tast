@@ -1,5 +1,5 @@
 class ArticlesController < ApplicationController
-  before_action :set_article, only: %i[ show edit update destroy count_comments set_article_number_of_comments]
+  before_action :set_article, only: %i[ show edit update destroy count_comments set_article_number_of_comments analyze_comments]
 
   # GET /articles or /articles.json
   def index
@@ -71,6 +71,11 @@ class ArticlesController < ApplicationController
         format.json { render json: @article.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def analyze_comments
+    ArticleAnalyzer.analyze_comments(@article)
+    redirect_to article_url(@article)
 
   end
 

@@ -7,7 +7,8 @@
 <div>
   <strong><%= link_to 'Count comments', analyze_article_path(@article) %></strong> |
   <%= link_to "Get comments", article_comments_path(@article), data: { "turbo-method": :post } %> |
-  <%= link_to "Show table of comments", article_comments_path(@article) %>
+  <%= link_to "Show table of comments", article_comments_path(@article) %> |
+  <%= link_to "Count comments rating", count_comments_rating_article_path(@article) %>
   <p></p>
   <h2><%= link_to "Back to articles", articles_path %> |
       <%= link_to "Add another article", new_article_path %> |
