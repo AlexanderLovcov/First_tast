@@ -6,8 +6,8 @@ require 'json'
 
 class ArticleAnalyzer
 
-  ENDPOINT = "https://article-analazer-anendo8.cognitiveservices.azure.com/"
-  PATH = '/text/analytics/v3.0/sentiment'
+  ENDPOINT = 'https://article-analazer-anendo8.cognitiveservices.azure.com/'.freeze
+  PATH = '/text/analytics/v3.0/sentiment'.freeze
 
   def self.count_comments(article)
     art_url = article.url
@@ -37,15 +37,14 @@ class ArticleAnalyzer
 
   def self.analyze_comments(article)
     comments = article.comments.map do |comment|
-      { language: 'en', text: comment.comment_text }
+      { id: comment.id, language: 'en', text: comment.comment_text }
     end
 
     uri = URI(ENDPOINT + PATH)
     documents = { 'documents': comments }
 
-
-    response = JSON.parse(ArticleAnalyzer.handle_request(uri, ArticleAnalyzer.build_request(documents, uri)))
-    response['documents'].map{ |comment| comment['confidenceScores'].each_with_object({}){ |(k, v), h| h.merge!(k => v * 100) } }
+    response = JSON.parse(ArticleAnalyzer.handle_request(uri, ArticleAnalyzer.build_request(documents, uri)).body)
+    response['documents'].map { |comment| comment['confidenceScores'].each_with_object({}) { |(k, v), h| h.merge!(k => v * 100) } }
   end
 
   def self.build_request(documents, uri)
@@ -53,11 +52,12 @@ class ArticleAnalyzer
     request['Content-Type'] = "application/json"
     request['Ocp-Apim-Subscription-Key'] = ENV["SUBSCRIPTION_KEY"]
     request.body = documents.to_json
+    request
   end
 
   def self.handle_request(uri, request)
-    request = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
-      http.request (request)
+    Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
+      http.request(request)
     end
   end
 end
