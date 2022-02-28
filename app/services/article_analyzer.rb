@@ -56,7 +56,6 @@ class ArticleAnalyzer
     art_url = article.url
     art_url = article.url.gsub('.html', '') + '/comments.html#comments' unless art_url.include? '/comments.html#comments'
 
-    doc = Nokogiri::HTML(URI.open('%s' % [art_url]))
-    doc
+    Nokogiri::HTML(URI.open('%s' % [art_url]))
   end
 end
