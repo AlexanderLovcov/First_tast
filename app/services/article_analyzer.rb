@@ -10,11 +10,7 @@ class ArticleAnalyzer
   PATH = '/text/analytics/v3.0/sentiment'.freeze
 
   def self.count_comments(article)
-    art_url = article.url
-    art_url = article.url.gsub('.html', '') + '/comments.html#comments' unless art_url.include? '/comments.html#comments'
-
-    doc = Nokogiri::HTML(URI.open('%s' % [art_url]))
-    doc.css('div.onecomm p.author span.about strong.name').map do |name|
+    ArticleAnalyzer.fetch_art_url(article).css('div.onecomm p.author span.about strong.name').map do |name|
       name.content
     end.count
   end
@@ -25,12 +21,7 @@ class ArticleAnalyzer
   end
 
   def self.get_comments(article)
-    art_url = article.url
-    art_url = article.url.gsub('.html', '') + '/comments.html#comments' unless art_url.include? '/comments.html#comments'
-
-    doc = Nokogiri::HTML(URI.open('%s' % [art_url]))
-
-    doc.css('div.onecomm p.commtext').map do |commtext|
+    ArticleAnalyzer.fetch_art_url(article).css('div.onecomm p.commtext').map do |commtext|
       Comment.create(comment_text: commtext.content, article_id: article.id)
     end
   end
@@ -59,5 +50,13 @@ class ArticleAnalyzer
     Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
       http.request(request)
     end
+  end
+
+  def self.fetch_art_url(article)
+    art_url = article.url
+    art_url = article.url.gsub('.html', '') + '/comments.html#comments' unless art_url.include? '/comments.html#comments'
+
+    doc = Nokogiri::HTML(URI.open('%s' % [art_url]))
+    doc
   end
 end
